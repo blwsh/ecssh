@@ -2,6 +2,7 @@
 
  import (
      "flag"
+     "fmt"
      "github.com/AlecAivazis/survey/v2"
      "github.com/aws/aws-sdk-go/aws"
      "github.com/aws/aws-sdk-go/aws/session"
@@ -36,35 +37,48 @@
         survey.AskOne(&survey.Input{Message: "Region",}, &region)
      }
 
-     if cluster == "" {
-        survey.AskOne(&survey.Input{Message: "Cluster",}, &cluster)
-     }
-
      sess.Config.Region = aws.String(region)
      ecsSvc := ecs.New(sess)
+
+     if cluster == "" {
+         clusters, err := ecsSvc.ListClusters(&ecs.ListClustersInput{})
+         if err == nil {
+             var clusterArnStrings []string
+             for _, arn := range clusters.ClusterArns {
+                clusterArnStrings = append(clusterArnStrings, *arn)
+             }
+             survey.AskOne(&survey.Select{Message: "Select a task", Options: clusterArnStrings}, &cluster)
+         } else {
+            survey.AskOne(&survey.Input{Message: "Cluster",}, &cluster)
+         }
+     }
 
      list, _ := ecsSvc.ListTasks(&ecs.ListTasksInput{
          Cluster: &cluster,
          MaxResults: aws.Int64(100),
      })
 
-     tasks, _ := ecsSvc.DescribeTasks(&ecs.DescribeTasksInput{
+     tasks, err := ecsSvc.DescribeTasks(&ecs.DescribeTasksInput{
          Cluster: &cluster,
          Tasks:   list.TaskArns,
      })
 
+     if err != nil {
+         log.Fatal(err.Error())
+     }
+
      var tasksStringArr []string
      containersMap := make(map[string]Pivot)
      for _, task := range tasks.Tasks {
+         fmt.Println(task)
          for _, container := range task.Containers {
-             tasksStringArr = append(tasksStringArr, *container.Name)
-             containersMap[*container.Name] = Pivot{task: *task, container: *container};
+             tasksStringArr = append(tasksStringArr, *task.Group + ": "+ *container.Name + " (" + *container.ContainerArn + ")")
+             containersMap[*task.Group + ": "+ *container.Name + " (" + *container.ContainerArn + ")"] = Pivot{task: *task, container: *container};
          }
      }
 
      var taskArn string
-     arnPrompt := &survey.Select{Message: "Select a task", Options: tasksStringArr}
-     survey.AskOne(arnPrompt, &taskArn)
+     survey.AskOne(&survey.Select{Message: "Select a task", Options: tasksStringArr}, &taskArn)
 
      selected := containersMap[taskArn]
 
