@@ -1,5 +1,8 @@
 # ECSSH 
 
+![ecssh cli demo](res/demo.gif)
+
+
 Elastic Container (Service) SSH - Allows you to easily navigate running containers in your ECS clusters using one simple command.
 
 # Requirements
