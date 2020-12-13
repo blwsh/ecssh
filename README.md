@@ -3,7 +3,7 @@
 ![ecssh cli demo](res/demo.gif)
 
 
-Elastic Container (Service) SSH - Allows you to easily navigate running containers in your ECS clusters using one simple command.
+Elastic Container (Service) SSH - Allows you to easily navigate running containers in your ECS clusters and run a shell in them using just one simple command.
 
 # Requirements
 
@@ -25,3 +25,10 @@ ecssh --region "<region>" --cluster "<cluster name or ARN>"
 |---------|-----------|---------------------------------------|
 | region  | ✔️        | The aws region of the cluster(s).     |
 | cluster | ✔️        | The cluster to search for containers. |
+
+### Future releases
+
+* Option to change default command.
+* Automate adding and removing security groups for port 22 access for specific IP addresses.
+* Automate adding ssh keys to ec2 instances.
+* See if fargate support is at all possible.
