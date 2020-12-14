@@ -22,8 +22,8 @@ Or via Docker
 ```shell
 docker run -it \
   -v ~/.aws:/app/.aws \
-  -v ~/kolmio.pem:/app/kolmio.pem \
-  test -i /app/kolmio.pem --region eu-west-2
+  -v ~/<key.pem>:/app/<key.pem> \
+  blwsh/ecssh:latest -i /app/<key.pem> --region <region>
 ```
 
 *Note in future versions, support for forwarding the host SSH agent and AWS SSM will be included meaning you can omit mounting a .pem file*
