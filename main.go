@@ -2,7 +2,6 @@
 
  import (
      "flag"
-     "fmt"
      "github.com/AlecAivazis/survey/v2"
      "github.com/aws/aws-sdk-go/aws"
      "github.com/aws/aws-sdk-go/aws/session"
@@ -72,7 +71,6 @@
      var tasksStringArr []string
      containersMap := make(map[string]Pivot)
      for _, task := range tasks.Tasks {
-         fmt.Println(task)
          for _, container := range task.Containers {
              tasksStringArr = append(tasksStringArr, *task.Group + ": "+ *container.Name + " (" + *container.ContainerArn + ")")
              containersMap[*task.Group + ": "+ *container.Name + " (" + *container.ContainerArn + ")"] = Pivot{task: *task, container: *container};
@@ -98,7 +96,13 @@
      //startSession, err := ssmSvc.StartSession(&ssm.StartSessionInput{Target: ec2Instance.Reservations[0].Instances[0].InstanceId})
      //fmt.Println(startSession)
 
-     command := exec.Command("ssh", "-t", "-i", i, "ec2-user@" + *ec2Instance.Reservations[0].Instances[0].PublicDnsName, "docker", "exec", "-it", *selected.container.RuntimeId, "/bin/sh")
+     command := exec.Command(
+         "ssh", "-t", "-i", i,
+         "ec2-user@" + *ec2Instance.Reservations[0].Instances[0].PublicDnsName,
+         "docker", "exec", "-it",
+         *selected.container.RuntimeId,
+         "/bin/sh",
+     )
      command.Stdout = os.Stdout
      command.Stdin = os.Stdin
      command.Stderr = os.Stderr
@@ -110,3 +114,4 @@
          log.Fatal(err.Error())
      }
  }
+
