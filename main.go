@@ -19,10 +19,12 @@
  }
 
  func main() {
+     var i string
      var region string
      var cluster string
 
      // Flags
+     flag.StringVar(&i, "i", "", ".PEM file location.")
      flag.StringVar(&region, "region", "", "Example: eu-west-2")
      flag.StringVar(&cluster, "cluster", "", "The name of your cluster.")
      flag.Parse()
@@ -91,12 +93,20 @@
      ec2Svc := ec2.New(sess)
      ec2Instance, _ := ec2Svc.DescribeInstances(&ec2.DescribeInstancesInput{InstanceIds: []*string{ecsInstance.ContainerInstances[0].Ec2InstanceId}})
 
-     command := exec.Command("ssh", "-t", "-i", "~/kolmio.pem", "ec2-user@" + *ec2Instance.Reservations[0].Instances[0].PublicDnsName, "docker", "exec", "-it", *selected.container.RuntimeId, "/bin/sh")
+
+     //ssmSvc := ssm.New(sess)
+     //startSession, err := ssmSvc.StartSession(&ssm.StartSessionInput{Target: ec2Instance.Reservations[0].Instances[0].InstanceId})
+     //fmt.Println(startSession)
+
+     command := exec.Command("ssh", "-t", "-i", i, "ec2-user@" + *ec2Instance.Reservations[0].Instances[0].PublicDnsName, "docker", "exec", "-it", *selected.container.RuntimeId, "/bin/sh")
      command.Stdout = os.Stdout
      command.Stdin = os.Stdin
      command.Stderr = os.Stderr
      err = command.Start()
+
      if err == nil {
-         command.Wait()
+        command.Wait()
+     } else {
+         log.Fatal(err.Error())
      }
  }
