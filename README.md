@@ -20,7 +20,7 @@ ecssh --region "<region>" --cluster "<cluster name or ARN>"
 Or via Docker
 
 ```shell
-docker run -it \
+docker run --rm -it \
   -v ~/.aws:/app/.aws \
   -v ~/<key.pem>:/app/<key.pem> \
   blwsh/ecssh:latest -i /app/<key.pem> --region <region>
