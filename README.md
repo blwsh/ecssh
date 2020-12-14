@@ -32,8 +32,8 @@ docker run --rm -it \
 
 | Name    | Optional  | Description                           |
 |---------|-----------|---------------------------------------|
-| region  | ✔️        | The AAWS region for the cluster(s).    |
-| cluster | ✔️        | The cluster to search for containers.  |
+| region  | ✔️         | The AWS region for the cluster(s).    |
+| cluster | ✔️         | The cluster to search for containers. |
 
 ### Future releases
 
