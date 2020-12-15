@@ -20,7 +20,7 @@ ecssh --region "<region>" --cluster "<cluster name or ARN>"
 Or via Docker
 
 ```shell
-docker run -it \
+docker run --rm -it \
   -v ~/.aws:/app/.aws \
   -v ~/<key.pem>:/app/<key.pem> \
   blwsh/ecssh:latest -i /app/<key.pem> --region <region>
@@ -32,8 +32,8 @@ docker run -it \
 
 | Name    | Optional  | Description                           |
 |---------|-----------|---------------------------------------|
-| region  | ✔️        | The aws region of the cluster(s).     |
-| cluster | ✔️        | The cluster to search for containers. |
+| region  | ✔️         | The AWS region for the cluster(s).    |
+| cluster | ✔️         | The cluster to search for containers. |
 
 ### Future releases
 
