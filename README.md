@@ -21,8 +21,8 @@ Or via Docker
 
 ```shell
 docker run --rm -it \
-  -v ~/.aws:/app/.aws \
-  -v ~/<key.pem>:/app/<key.pem> \
+  -v ~/.aws:/app/.aws \ # Mounts your AWS config
+  -v ~/<key.pem>:/app/<key.pem> \ # The pem file to connect to the instance via SSH 
   blwsh/ecssh:latest -i /app/<key.pem> --region <region>
 ```
 
